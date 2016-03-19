@@ -1,5 +1,18 @@
 package rtg.event;
 
+import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
+import net.minecraft.world.gen.structure.MapGenStructureIO;
+import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.common.BiomeDictionary.Type;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.terraingen.BiomeEvent;
+import net.minecraftforge.event.terraingen.DecorateBiomeEvent;
+import net.minecraftforge.event.terraingen.InitMapGenEvent;
+import net.minecraftforge.event.terraingen.OreGenEvent;
+import net.minecraftforge.event.terraingen.PopulateChunkEvent;
+import net.minecraftforge.event.terraingen.WorldTypeEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import rtg.RTG;
 import rtg.config.rtg.ConfigRTG;
 import rtg.util.Logger;
@@ -14,20 +27,6 @@ import rtg.world.gen.structure.MapGenVillageRTG;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-
-import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
-import net.minecraft.world.gen.structure.MapGenStructureIO;
-
-import net.minecraftforge.common.BiomeDictionary;
-import net.minecraftforge.common.BiomeDictionary.Type;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.terraingen.BiomeEvent;
-import net.minecraftforge.event.terraingen.DecorateBiomeEvent;
-import net.minecraftforge.event.terraingen.InitMapGenEvent;
-import net.minecraftforge.event.terraingen.OreGenEvent;
-import net.minecraftforge.event.terraingen.WorldTypeEvent;
-import net.minecraftforge.event.world.WorldEvent;
 
 public class EventManagerRTG
 {
@@ -240,17 +239,39 @@ public class EventManagerRTG
         }
     }
     
+    @SubscribeEvent
+    public void onPopulateChunk(PopulateChunkEvent.Populate event)
+    {
+    	if (this.biome != null) {
+    		
+	    	switch (event.type)
+	    	{
+		    	case LAKE:
+		    		if (BiomeDictionary.isBiomeOfType(this.biome, Type.SWAMP)) {
+		    			event.setResult(Result.DENY);
+		    		}
+		    		break;
+		    		
+		    	default:
+		    		break;
+	    	}
+    	}
+    }
+    
     private boolean isDesertVillageBiome()
     {
-        if (
-            BiomeDictionary.isBiomeOfType(this.biome, Type.HOT)
-            &&
-            BiomeDictionary.isBiomeOfType(this.biome, Type.DRY)
-            &&
-            BiomeDictionary.isBiomeOfType(this.biome, Type.SANDY)
-        ) {
-            return true;
-        }
+    	if (this.biome != null) {
+    		
+	        if (
+	            BiomeDictionary.isBiomeOfType(this.biome, Type.HOT)
+	            &&
+	            BiomeDictionary.isBiomeOfType(this.biome, Type.DRY)
+	            &&
+	            BiomeDictionary.isBiomeOfType(this.biome, Type.SANDY)
+	        ) {
+	            return true;
+	        }
+    	}
         
         return false;
     }
