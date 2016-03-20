@@ -2,15 +2,18 @@ package rtg.config.rtg;
 
 import java.io.File;
 
+import net.minecraftforge.common.config.Configuration;
 import rtg.util.Logger;
 import cpw.mods.fml.common.Loader;
-
-import net.minecraftforge.common.config.Configuration;
 
 public class ConfigRTG
 {
 	public static Configuration config;
 	
+    /* ==================== Beaches ==================== */
+	
+	public static boolean overrideVanillaBeaches = false;
+    
     /* ==================== Bedrock ==================== */
 	
     public static int flatBedrockLayers = 0;
@@ -141,6 +144,20 @@ public class ConfigRTG
 		{
 			config.load();
 			
+            /* ==================== Beaches ==================== */
+            
+			overrideVanillaBeaches = config.getBoolean(
+                "Override Vanilla Beaches",
+                "Beaches",
+                overrideVanillaBeaches,
+                "If TRUE, the vanilla Beach biome will be replaced with RTG's beach biome."
+                + Configuration.NEW_LINE +
+                "This setting allows OceanCraft to decorate beaches properly, but it may cause compatibility issues with other mods."
+                + Configuration.NEW_LINE +
+                "Do NOT change this unless you have been instructed to do so by a member of Team RTG."
+                + Configuration.NEW_LINE
+			);
+            
 			/* ==================== Bedrock ==================== */
 			
             flatBedrockLayers = config.getInt("Number of flat bedrock layers", "Bedrock", flatBedrockLayers, 0, 5, "0 = Normal bedrock (rough pattern); 1-5 = Number of flat bedrock layers to generate" + Configuration.NEW_LINE);
